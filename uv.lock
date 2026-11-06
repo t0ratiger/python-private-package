@@ -4,5 +4,5 @@ requires-python = ">=3.13"
 
 [[package]]
 name = "python-private-package"
-version = "2"
+version = "3"
 source = { editable = "." }
