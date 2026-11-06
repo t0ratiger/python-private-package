@@ -1,7 +1,9 @@
 [project]
 name = "python-private-package"
 version = "0.1.0"
-description = "Add your description here"
 readme = "README.md"
 requires-python = ">=1.13"
 dependencies = []
+
+[project.scripts]
+python-private-package = "python_private_package.__main__:main"
