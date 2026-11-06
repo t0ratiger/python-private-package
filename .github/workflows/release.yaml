@@ -18,6 +18,18 @@ jobs:
           version-file: "pyproject.toml"
           enable-cache: true
 
+      - name: Check release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag="v$(uv version --short)"
+          tags="$(gh api --paginate "repos/${GH_REPO}/releases" --jq '.[].tag_name')"
+          if grep -Fxq -- "$tag" <<< "$tags"; then
+            echo "::error::Release $tag already exists."
+            exit 1
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
