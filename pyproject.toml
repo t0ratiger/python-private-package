@@ -1,6 +1,6 @@
 [project]
 name = "python-private-package"
-version = "1"
+version = "2"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = []
