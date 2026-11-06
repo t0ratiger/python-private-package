@@ -2,6 +2,10 @@
 
 - バージョンは、main から PR を切って `pyproject.toml` の `version` を更新する
 
+```
+uv version <new_version>
+```
+
 ## 概要
 
 - id, 値段, 個数を持つ CSV に対して、値段 × 個数を合計し、指定したファイルに合計金額を出力する cli
