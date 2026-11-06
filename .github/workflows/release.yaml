@@ -1,16 +1,10 @@
 name: release
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 permissions:
   contents: write
-
-concurrency:
-  # 同じバージョンを複数回リリースしないようにするため、workflow名をgroupに指定
-  group: ${{ github.workflow }}
 
 jobs:
   release:
@@ -24,44 +18,24 @@ jobs:
           version-file: "pyproject.toml"
           enable-cache: true
 
-      - name: Check release
-        id: release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          tag="v$(uv version --short)"
-          tags="$(gh api --paginate "repos/${GH_REPO}/releases" --jq '.[].tag_name')"
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          if grep -Fxq -- "$tag" <<< "$tags"; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "Release $tag already exists; skipping."
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Set up Python
-        if: steps.release.outputs.exists == 'false'
         uses: actions/setup-python@v7
         with:
           python-version-file: ".python-version"
 
       - name: Install package
-        if: steps.release.outputs.exists == 'false'
         run: uv sync --locked --no-dev --no-editable
 
       - name: Build distributions
-        if: steps.release.outputs.exists == 'false'
         run: uv build
 
       - name: Create release
-        if: steps.release.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_COMMIT: ${{ github.sha }}
-          RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
-          gh release create "$RELEASE_TAG" dist/*.whl dist/*.tar.gz \
+          version="$(uv version --short)"
+          gh release create "v${version}" dist/*.whl dist/*.tar.gz \
             --target "$RELEASE_COMMIT" \
             --generate-notes

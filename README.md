@@ -6,6 +6,8 @@
 uv version <new_version>
 ```
 
+その後、手動で release workflow を実行する
+
 ## 概要
 
 - id, 値段, 個数を持つ CSV に対して、値段 × 個数を合計し、指定したファイルに合計金額を出力する cli
